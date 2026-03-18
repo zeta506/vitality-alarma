@@ -320,60 +320,97 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transform: scale(1.1);
 }
 
-/* Water Log */
-.water-summary {
-    text-align: center;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--tertiary);
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    background: rgba(59, 130, 246, 0.1);
-    border: 1px solid var(--tertiary-glow);
-    border-radius: 8px;
-}
-
-.water-entry {
+/* Routine Alarms */
+.routine-entry {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 1rem;
+    padding: 1rem;
     background: rgba(15, 23, 42, 0.8);
     border-left: 4px solid var(--tertiary);
     border-radius: 8px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     animation: slideIn 0.3s ease-out forwards;
 }
 
-.water-entry-info {
+.routine-entry.inactive {
+    opacity: 0.5;
+    border-left-color: var(--text-muted);
+}
+
+.routine-entry-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.routine-entry-header {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    color: var(--text-main);
-    font-weight: 500;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
 }
 
-.water-entry-info i {
+.routine-entry-header i {
     color: var(--tertiary);
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
-.water-entry-time {
+.routine-entry-label {
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.routine-entry-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 50px;
+    background: rgba(148, 163, 184, 0.2);
     color: var(--text-muted);
-    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.water-entry-delete {
+.routine-entry-badge.active {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.routine-entry-schedule {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+}
+
+.routine-entry-times {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+.routine-entry-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    margin-left: 0.75rem;
+}
+
+.routine-entry-actions button {
     background: none;
     border: none;
     color: var(--text-muted);
     cursor: pointer;
-    padding: 0.4rem;
+    padding: 0.5rem;
     transition: 0.2s;
     font-size: 1rem;
 }
 
-.water-entry-delete:hover {
+.routine-toggle:hover {
+    color: var(--tertiary);
+    transform: scale(1.1);
+}
+
+.routine-delete:hover {
     color: var(--danger);
     transform: scale(1.1);
 }
@@ -462,8 +499,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .toast.med-alarm { border-left: 4px solid var(--danger); }
 .toast.med-alarm .toast-icon { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
 
-.toast.water-reminder { border-left: 4px solid var(--tertiary); }
-.toast.water-reminder .toast-icon { color: var(--tertiary); background: rgba(59, 130, 246, 0.1); }
+.toast.routine-reminder { border-left: 4px solid var(--tertiary); }
+.toast.routine-reminder .toast-icon { color: var(--tertiary); background: rgba(59, 130, 246, 0.1); }
+
+.toast.routine-alarm { border-left: 4px solid var(--danger); }
+.toast.routine-alarm .toast-icon { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
 
 /* Persistent alarm pulse */
 .toast.persistent-alarm {

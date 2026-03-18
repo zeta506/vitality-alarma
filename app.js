@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State Variables (load from localStorage) ---
     let appointments = loadFromStorage('vitality-appointments', []);
     let medications = loadFromStorage('vitality-medications', []);
-    let waterLog = loadFromStorage('vitality-water-log', []);
+    let routineAlarms = loadFromStorage('vitality-routine-alarms', []);
 
     // --- localStorage helpers ---
     function saveToStorage(key, data) {
@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
         saveToStorage('vitality-medications', medications);
     }
 
-    function saveWaterLog() {
-        saveToStorage('vitality-water-log', waterLog);
+    function saveRoutineAlarms() {
+        saveToStorage('vitality-routine-alarms', routineAlarms);
     }
 
     // --- Service Worker & Push Notifications ---
@@ -87,8 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const clockEl = document.getElementById('current-time');
     const eventsListEl = document.getElementById('events-list');
-    const waterListEl = document.getElementById('water-list');
-    const waterSummaryEl = document.getElementById('water-summary');
+    const routineListEl = document.getElementById('routine-list');
     const alarmSound = document.getElementById('alarm-sound');
     const toastContainer = document.getElementById('toast-container');
 
@@ -97,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const now = new Date();
         clockEl.textContent = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         checkAlarms(now);
+        checkRoutineAlarms(now);
     }, 1000);
 
     // --- Helper function to create toasts ---
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let iconClass = 'fa-bell';
         if (type.includes('app')) iconClass = 'fa-calendar-check';
         if (type.includes('med')) iconClass = 'fa-pills';
-        if (type.includes('water')) iconClass = 'fa-glass-water';
+        if (type.includes('routine')) iconClass = 'fa-bell';
         if (type.includes('advance')) iconClass = 'fa-clock-rotate-left';
         if (type.includes('alarm')) iconClass = 'fa-triangle-exclamation';
 
@@ -275,26 +275,75 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Éxito', 'Medicamento guardado correctamente.', 'med-advance');
     });
 
-    document.getElementById('water-form').addEventListener('submit', (e) => {
+    document.getElementById('routine-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        const amount = parseInt(document.getElementById('water-amount').value);
-        const time = document.getElementById('water-time').value;
-        const today = new Date();
-        const date = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+        const startTime = document.getElementById('routine-start').value;
+        const endTime = document.getElementById('routine-end').value;
+        const interval = parseFloat(document.getElementById('routine-interval').value);
+        const label = document.getElementById('routine-label').value || 'Alarma rutinaria';
 
-        waterLog.push({
+        // Generate all trigger times within the range
+        const triggerTimes = generateTriggerTimes(startTime, endTime, interval);
+
+        routineAlarms.push({
             id: Date.now(),
-            amount,
-            time,
-            date
+            label,
+            startTime,
+            endTime,
+            interval,
+            triggerTimes,
+            notifiedTimes: [],
+            active: true
         });
 
-        saveWaterLog();
+        saveRoutineAlarms();
         e.target.reset();
-        document.getElementById('water-amount').value = 1;
-        renderWaterLog();
-        showToast('Hidratación', `${amount} vaso(s) registrado(s) a las ${time}.`, 'water-reminder');
+        renderRoutineAlarms();
+        showToast('Alarma Rutinaria', `"${label}" configurada de ${startTime} a ${endTime} cada ${interval}h.`, 'routine-reminder');
     });
+
+    function generateTriggerTimes(start, end, intervalHours) {
+        const times = [];
+        const [startH, startM] = start.split(':').map(Number);
+        let currentMinutes = startH * 60 + startM;
+        const [endH, endM] = end.split(':').map(Number);
+        const endMinutes = endH * 60 + endM;
+        const intervalMinutes = intervalHours * 60;
+
+        while (currentMinutes <= endMinutes) {
+            const h = String(Math.floor(currentMinutes / 60)).padStart(2, '0');
+            const m = String(currentMinutes % 60).padStart(2, '0');
+            times.push(`${h}:${m}`);
+            currentMinutes += intervalMinutes;
+        }
+
+        return times;
+    }
+
+    function checkRoutineAlarms(now) {
+        const currentTime = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+        const currentSeconds = now.getSeconds();
+        const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+
+        if (currentSeconds !== 0) return;
+
+        routineAlarms.forEach(alarm => {
+            if (!alarm.active) return;
+
+            // Reset notified times if it's a new day
+            if (alarm.lastNotifiedDate !== todayStr) {
+                alarm.notifiedTimes = [];
+                alarm.lastNotifiedDate = todayStr;
+                saveRoutineAlarms();
+            }
+
+            if (alarm.triggerTimes.includes(currentTime) && !alarm.notifiedTimes.includes(currentTime)) {
+                showToast(`¡${alarm.label}!`, `Alarma programada: ${currentTime} (cada ${alarm.interval}h, ${alarm.startTime}–${alarm.endTime})`, 'routine-alarm');
+                alarm.notifiedTimes.push(currentTime);
+                saveRoutineAlarms();
+            }
+        });
+    }
 
     // --- Render Events List ---
     function renderEvents() {
@@ -357,50 +406,64 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Prueba de Sistema', '¡Esta es una alarma de prueba funcional con sonido!', 'app-alarm');
     });
 
-    // --- Render Water Log ---
-    function renderWaterLog() {
-        const today = new Date();
-        const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+    // --- Render Routine Alarms ---
+    function renderRoutineAlarms() {
+        routineListEl.innerHTML = '';
 
-        const todayEntries = waterLog.filter(w => w.date === todayStr);
-        const totalGlasses = todayEntries.reduce((sum, w) => sum + w.amount, 0);
-
-        waterSummaryEl.textContent = `${totalGlasses} vaso${totalGlasses !== 1 ? 's' : ''} hoy`;
-
-        waterListEl.innerHTML = '';
-
-        if (todayEntries.length === 0) {
-            waterListEl.innerHTML = '<div class="empty-state">No hay registros de agua hoy.</div>';
+        if (routineAlarms.length === 0) {
+            routineListEl.innerHTML = '<div class="empty-state">No hay alarmas rutinarias configuradas.</div>';
             return;
         }
 
-        todayEntries.sort((a, b) => a.time.localeCompare(b.time));
-
-        todayEntries.forEach(entry => {
+        routineAlarms.forEach(alarm => {
             const div = document.createElement('div');
-            div.className = 'water-entry';
+            div.className = `routine-entry ${alarm.active ? '' : 'inactive'}`;
+            const nextTimes = alarm.triggerTimes.slice(0, 5).join(', ') + (alarm.triggerTimes.length > 5 ? '...' : '');
             div.innerHTML = `
-                <div class="water-entry-info">
-                    <i class="fa-solid fa-glass-water"></i>
-                    <span>${entry.amount} vaso${entry.amount !== 1 ? 's' : ''}</span>
-                    <span class="water-entry-time">${entry.time}</span>
+                <div class="routine-entry-info">
+                    <div class="routine-entry-header">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="routine-entry-label">${alarm.label}</span>
+                        <span class="routine-entry-badge ${alarm.active ? 'active' : ''}">${alarm.active ? 'Activa' : 'Pausada'}</span>
+                    </div>
+                    <p class="routine-entry-schedule">${alarm.startTime} – ${alarm.endTime} | Cada ${alarm.interval}h</p>
+                    <p class="routine-entry-times">Horarios: ${nextTimes}</p>
                 </div>
-                <button class="water-entry-delete" data-id="${entry.id}"><i class="fa-solid fa-xmark"></i></button>
+                <div class="routine-entry-actions">
+                    <button class="routine-toggle" data-id="${alarm.id}" title="${alarm.active ? 'Pausar' : 'Activar'}">
+                        <i class="fa-solid ${alarm.active ? 'fa-pause' : 'fa-play'}"></i>
+                    </button>
+                    <button class="routine-delete" data-id="${alarm.id}" title="Eliminar">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
             `;
-            waterListEl.appendChild(div);
+            routineListEl.appendChild(div);
         });
 
-        waterListEl.querySelectorAll('.water-entry-delete').forEach(btn => {
+        routineListEl.querySelectorAll('.routine-toggle').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const id = parseInt(e.currentTarget.getAttribute('data-id'));
-                waterLog = waterLog.filter(w => w.id !== id);
-                saveWaterLog();
-                renderWaterLog();
+                const alarm = routineAlarms.find(a => a.id === id);
+                if (alarm) {
+                    alarm.active = !alarm.active;
+                    saveRoutineAlarms();
+                    renderRoutineAlarms();
+                }
+            });
+        });
+
+        routineListEl.querySelectorAll('.routine-delete').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                routineAlarms = routineAlarms.filter(a => a.id !== id);
+                saveRoutineAlarms();
+                renderRoutineAlarms();
             });
         });
     }
 
     // Initialize display
     renderEvents();
-    renderWaterLog();
+    renderRoutineAlarms();
 });
