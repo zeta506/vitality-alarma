@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let swRegistration = null;
 
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
+        navigator.serviceWorker.register('./sw.js?v=2')
             .then((registration) => {
                 swRegistration = registration;
                 console.log('Service Worker registrado:', registration.scope);
