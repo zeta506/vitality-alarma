@@ -1,0 +1,504 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Outfit', sans-serif;
+}
+
+/* ========== Theme Variables ========== */
+:root {
+  --bg-body: #0f172a;
+  --bg-surface: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --bg-card-hover: rgba(30, 41, 59, 0.9);
+  --bg-input: rgba(15, 23, 42, 0.6);
+  --bg-sidebar: rgba(15, 23, 42, 0.8);
+  --bg-header: rgba(15, 23, 42, 0.6);
+  --border-card: rgba(255, 255, 255, 0.1);
+  --border-input: rgba(255, 255, 255, 0.1);
+  --text-primary: #f8fafc;
+  --text-secondary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 15px 35px rgba(0, 0, 0, 0.3);
+  --scrollbar-thumb: rgba(148, 163, 184, 0.3);
+  --invert-calendar: 1;
+}
+
+:root.light {
+  --bg-body: #e8edf2;
+  --bg-surface: #e8edf2;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-card-hover: rgba(255, 255, 255, 1);
+  --bg-input: #ffffff;
+  --bg-sidebar: rgba(255, 255, 255, 0.97);
+  --bg-header: rgba(255, 255, 255, 0.92);
+  --border-card: rgba(100, 116, 139, 0.18);
+  --border-input: rgba(100, 116, 139, 0.25);
+  --text-primary: #0f172a;
+  --text-secondary: #1e293b;
+  --text-muted: #475569;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 20px rgba(0, 0, 0, 0.07);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.1), 0 10px 30px rgba(0, 0, 0, 0.1);
+  --scrollbar-thumb: rgba(100, 116, 139, 0.3);
+  --invert-calendar: 0;
+  --bg-progress: #e2e8f0;
+  --bg-subtle: rgba(148, 163, 184, 0.08);
+}
+
+/* ========== Layout ========== */
+@media (min-width: 1024px) {
+  .app-main {
+    margin-left: 16rem;
+  }
+}
+
+.page-content {
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.page-content-narrow {
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+/* ========== Glassmorphism Card ========== */
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+/* ========== Base Styles ========== */
+@layer base {
+  body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  input, select, textarea {
+    background: var(--bg-input);
+    border: 1px solid var(--border-input);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s;
+    width: 100%;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: #06b6d4;
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.4);
+  }
+
+  input[type="time"]::-webkit-calendar-picker-indicator,
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(var(--invert-calendar));
+    cursor: pointer;
+  }
+}
+
+/* ========== Theme-aware overrides ========== */
+.theme-sidebar {
+  background: var(--bg-sidebar);
+  border-color: var(--border-card);
+}
+
+.theme-header {
+  background: var(--bg-header);
+  border-color: var(--border-card);
+}
+
+.theme-surface {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.theme-text {
+  color: var(--text-primary);
+}
+
+.theme-text-muted {
+  color: var(--text-muted);
+}
+
+/* ========================================================
+   LIGHT MODE — comprehensive overrides
+   ======================================================== */
+
+/* --- Sidebar --- */
+:root.light .theme-sidebar {
+  color: var(--text-primary);
+  border-right-color: var(--border-card);
+}
+
+:root.light .theme-sidebar p,
+:root.light .theme-sidebar span,
+:root.light .theme-sidebar button {
+  color: var(--text-muted);
+}
+
+:root.light .theme-sidebar a {
+  color: var(--text-secondary);
+}
+
+:root.light .theme-sidebar a:hover {
+  background-color: rgba(6, 182, 212, 0.06);
+  color: #0891b2;
+}
+
+:root.light .theme-sidebar a.active,
+:root.light .theme-sidebar a[aria-current="page"] {
+  color: #0891b2;
+  background-color: rgba(6, 182, 212, 0.1);
+  font-weight: 600;
+}
+
+/* --- Header --- */
+:root.light .theme-header p,
+:root.light .theme-header span {
+  color: var(--text-muted);
+}
+
+:root.light .theme-header .text-cyan-500 {
+  color: #0891b2 !important;
+}
+
+/* --- Glass card content inherits light text --- */
+:root.light .glass-card {
+  color: var(--text-primary);
+}
+
+:root.light .glass-card h1,
+:root.light .glass-card h2,
+:root.light .glass-card h3,
+:root.light .glass-card h4 {
+  color: var(--text-primary);
+}
+
+:root.light .glass-card p,
+:root.light .glass-card span,
+:root.light .glass-card label,
+:root.light .glass-card div,
+:root.light .glass-card li {
+  color: inherit;
+}
+
+/* --- Text color remapping --- */
+:root.light .text-white,
+:root.light [class*="text-white"] {
+  color: #0f172a !important;
+}
+
+:root.light .text-slate-100,
+:root.light .text-slate-200 {
+  color: #0f172a !important;
+}
+
+:root.light .text-slate-300 {
+  color: #1e293b !important;
+}
+
+:root.light .text-slate-400 {
+  color: #475569 !important;
+}
+
+:root.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* --- SVG fill in light mode (streak ring text etc.) --- */
+:root.light .fill-white {
+  fill: var(--text-primary) !important;
+}
+
+:root.light .fill-slate-400 {
+  fill: var(--text-muted) !important;
+}
+
+/* SVG ring background */
+:root.light svg circle[stroke="rgba(255,255,255,0.05)"] {
+  stroke: rgba(0, 0, 0, 0.06);
+}
+
+/* --- Background remapping --- */
+:root.light .bg-slate-700 {
+  background-color: #e2e8f0 !important;
+}
+
+:root.light .bg-slate-700:hover {
+  background-color: #cbd5e1 !important;
+}
+
+:root.light .bg-slate-700\/50 {
+  background-color: rgba(226, 232, 240, 0.6) !important;
+}
+
+:root.light .bg-slate-700\/60 {
+  background-color: #e2e8f0 !important;
+}
+
+:root.light .bg-slate-600 {
+  background-color: #cbd5e1 !important;
+}
+
+:root.light .bg-slate-600\/50 {
+  background-color: rgba(203, 213, 225, 0.5) !important;
+}
+
+:root.light .bg-slate-800 {
+  background-color: #f1f5f9 !important;
+}
+
+:root.light .bg-slate-900 {
+  background-color: #f8fafc !important;
+}
+
+:root.light .bg-slate-950 {
+  background-color: #f0f4f8 !important;
+}
+
+/* --- Opacity-based backgrounds --- */
+:root.light .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+:root.light .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Color tinted backgrounds — keep tint but lighter */
+:root.light .bg-cyan-500\/10,
+:root.light .bg-cyan-600\/20 {
+  background-color: rgba(6, 182, 212, 0.08) !important;
+}
+
+:root.light .bg-purple-500\/10 {
+  background-color: rgba(168, 85, 247, 0.08) !important;
+}
+
+:root.light .bg-orange-500\/10 {
+  background-color: rgba(249, 115, 22, 0.08) !important;
+}
+
+:root.light .bg-pink-500\/10 {
+  background-color: rgba(236, 72, 153, 0.08) !important;
+}
+
+:root.light .bg-red-500\/10,
+:root.light .bg-red-500\/20,
+:root.light .bg-red-600\/20 {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+}
+
+:root.light .bg-green-500\/10 {
+  background-color: rgba(34, 197, 94, 0.08) !important;
+}
+
+:root.light .bg-indigo-600 {
+  background-color: #818cf8 !important;
+}
+
+/* --- Border remapping --- */
+:root.light .border-white\/5,
+:root.light .border-white\/10 {
+  border-color: rgba(148, 163, 184, 0.15) !important;
+}
+
+:root.light .border-slate-600 {
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+:root.light .ring-white\/10 {
+  --tw-ring-color: rgba(148, 163, 184, 0.2) !important;
+}
+
+:root.light .ring-white\/20 {
+  --tw-ring-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+:root.light .border-cyan-500\/40 {
+  border-color: rgba(6, 182, 212, 0.25) !important;
+}
+
+:root.light .ring-cyan-500\/20 {
+  --tw-ring-color: rgba(6, 182, 212, 0.12) !important;
+}
+
+/* --- Accent text colors — slightly more vivid in light --- */
+:root.light .text-cyan-400 {
+  color: #0891b2 !important;
+}
+
+:root.light .text-cyan-300 {
+  color: #06b6d4 !important;
+}
+
+:root.light .text-purple-400 {
+  color: #9333ea !important;
+}
+
+:root.light .text-orange-400 {
+  color: #ea580c !important;
+}
+
+:root.light .text-pink-400 {
+  color: #db2777 !important;
+}
+
+:root.light .text-red-400 {
+  color: #dc2626 !important;
+}
+
+:root.light .text-green-400 {
+  color: #16a34a !important;
+}
+
+:root.light .text-amber-400 {
+  color: #d97706 !important;
+}
+
+:root.light .text-indigo-400 {
+  color: #6366f1 !important;
+}
+
+:root.light .text-blue-400 {
+  color: #2563eb !important;
+}
+
+:root.light .text-yellow-400 {
+  color: #ca8a04 !important;
+}
+
+/* --- Solid colored buttons & links: keep white text ---
+   These have text-white + solid bg like bg-purple-600, bg-cyan-600, etc.
+   Must override the general text-white → dark remap above. */
+:root.light .text-white.bg-purple-600,
+:root.light .text-white.bg-purple-500,
+:root.light .text-white.bg-cyan-600,
+:root.light .text-white.bg-cyan-500,
+:root.light .text-white.bg-pink-600,
+:root.light .text-white.bg-pink-500,
+:root.light .text-white.bg-orange-600,
+:root.light .text-white.bg-orange-500,
+:root.light .text-white.bg-red-600,
+:root.light .text-white.bg-red-500,
+:root.light .text-white.bg-green-600,
+:root.light .text-white.bg-green-500,
+:root.light .text-white.bg-blue-600,
+:root.light .text-white.bg-blue-500,
+:root.light .text-white.bg-indigo-600,
+:root.light .text-white.bg-teal-600,
+:root.light .text-white.bg-teal-500,
+:root.light .bg-gradient-to-br .text-white,
+:root.light .bg-gradient-to-br.text-white,
+:root.light div.bg-cyan-600 .text-white,
+:root.light div.bg-gradient-to-br .text-white {
+  color: #ffffff !important;
+}
+
+/* Also the icon inside the logo and avatar */
+:root.light .bg-gradient-to-br .text-white,
+:root.light .bg-cyan-600.text-white {
+  color: #ffffff !important;
+}
+
+/* Ghost/tinted buttons (bg with opacity like bg-red-600/20): readable colored text */
+:root.light .text-red-400.bg-red-600\/20,
+:root.light .text-red-400.bg-red-500\/20 {
+  color: #dc2626 !important;
+}
+
+:root.light button[class*="bg-slate-700"][class*="text-slate"] {
+  color: #334155 !important;
+}
+
+/* --- Select / dropdown in light --- */
+:root.light select {
+  background-color: #f8fafc;
+  color: var(--text-primary);
+  border-color: rgba(148, 163, 184, 0.3);
+}
+
+/* --- Placeholder --- */
+:root.light input::placeholder,
+:root.light textarea::placeholder {
+  color: #94a3b8;
+}
+
+/* --- Login & Auth pages --- */
+:root.light .bg-slate-950 {
+  background-color: var(--bg-body) !important;
+}
+
+/* --- Logout / danger buttons --- */
+:root.light .bg-red-600\/20:hover {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+}
+
+/* --- Achievement locked cards --- */
+:root.light .bg-slate-800\/50 {
+  background-color: rgba(241, 245, 249, 0.8) !important;
+}
+
+/* --- Toast notifications --- */
+:root.light .toast,
+:root.light [class*="bg-\\[#1e293b\\]"],
+:root.light [style*="background: rgb(30, 41, 59)"],
+:root.light [style*="background: #1e293b"] {
+  background-color: #fff !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-card) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* --- Breathing circle background in light --- */
+:root.light .bg-gradient-to-br {
+  opacity: 0.9;
+}
+
+/* ========== Animations ========== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(0.6); opacity: 0.5; }
+  50% { transform: scale(1); opacity: 1; }
+}
