@@ -1,152 +1,19 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitality - Asistente de Salud Integral</title>
-    <link rel="stylesheet" href="style.css?v=2">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/icons/icon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#06b6d4">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2966/2966327.png">
-</head>
-<body>
-    <!-- Background Decorators -->
-    <div class="bg-shape shape-1"></div>
-    <div class="bg-shape shape-2"></div>
-    <div class="bg-shape shape-3"></div>
-
-    <div class="app-wrapper">
-        <header>
-            <div class="logo">
-                <i class="fa-solid fa-heart-pulse"></i>
-                <h1>Vitality</h1>
-            </div>
-            <p>Tu prototipo de recordatorios médicos y bienestar</p>
-        </header>
-
-        <main class="dashboard">
-            <!-- Left Column: Forms -->
-            <section class="forms-section">
-                <!-- Citas Médicas -->
-                <div class="card form-card">
-                    <div class="card-header">
-                        <i class="fa-regular fa-calendar-check icon-primary"></i>
-                        <h2>Nueva Cita Médica</h2>
-                    </div>
-                    <form id="appointment-form">
-                        <div class="input-group">
-                            <label for="app-title">Doctor / Especialidad</label>
-                            <input type="text" id="app-title" placeholder="Ej. Cardiólogo Dr. Pérez" required>
-                        </div>
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="app-date">Fecha</label>
-                                <input type="date" id="app-date" required>
-                            </div>
-                            <div class="input-group">
-                                <label for="app-time">Hora</label>
-                                <input type="time" id="app-time" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Guardar Cita</button>
-                    </form>
-                </div>
-
-                <!-- Medicamentos -->
-                <div class="card form-card">
-                    <div class="card-header">
-                        <i class="fa-solid fa-pills icon-secondary"></i>
-                        <h2>Nuevo Medicamento</h2>
-                    </div>
-                    <form id="medication-form">
-                        <div class="input-group">
-                            <label for="med-name">Nombre del Medicamento</label>
-                            <input type="text" id="med-name" placeholder="Ej. Paracetamol 500mg" required>
-                        </div>
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="med-date">Fecha de inicio</label>
-                                <input type="date" id="med-date" required>
-                            </div>
-                            <div class="input-group">
-                                <label for="med-time">Hora</label>
-                                <input type="time" id="med-time" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-secondary">Añadir Medicamento</button>
-                    </form>
-                </div>
-
-                <!-- Alarma Rutinaria -->
-                <div class="card form-card">
-                    <div class="card-header">
-                        <i class="fa-solid fa-bell icon-tertiary"></i>
-                        <h2>Alarma Rutinaria</h2>
-                    </div>
-                    <form id="routine-form">
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="routine-start">Hora inicio</label>
-                                <input type="time" id="routine-start" required>
-                            </div>
-                            <div class="input-group">
-                                <label for="routine-end">Hora fin</label>
-                                <input type="time" id="routine-end" required>
-                            </div>
-                        </div>
-                        <div class="input-group">
-                            <label for="routine-interval">Intervalo (horas)</label>
-                            <input type="number" id="routine-interval" placeholder="Ej. 2" min="0.5" step="0.5" required>
-                        </div>
-                        <div class="input-group">
-                            <label for="routine-label">Etiqueta (opcional)</label>
-                            <input type="text" id="routine-label" placeholder="Ej. Estirar, Hidratarse, Descansar vista...">
-                        </div>
-                        <button type="submit" class="btn btn-tertiary">Activar Alarma</button>
-                    </form>
-                </div>
-            </section>
-
-            <!-- Right Column: Lists & Status -->
-            <section class="lists-section">
-                <!-- Estado del sistema -->
-                <div class="status-panel card glass-panel">
-                    <h3><i class="fa-solid fa-clock"></i> Hora Actual del Sistema</h3>
-                    <div class="clock-display" id="current-time">00:00:00</div>
-                    <div class="status-info">
-                        <p><i class="fa-solid fa-info-circle"></i> Los recordatorios anticipados saltarán 1 hora antes de la cita o medicamento.</p>
-                        <button id="test-notification-btn" class="btn btn-outline">Probar Alarma</button>
-                    </div>
-                </div>
-
-                <!-- Lista de Registros -->
-                <div class="card list-card">
-                    <h2>Próximos Eventos</h2>
-                    <div class="events-container" id="events-list">
-                        <div class="empty-state">No hay eventos programados.</div>
-                    </div>
-                </div>
-                
-                <div class="card list-card">
-                    <h2><i class="fa-solid fa-bell icon-tertiary"></i> Alarmas Rutinarias Activas</h2>
-                    <div class="routine-list" id="routine-list">
-                        <div class="empty-state">No hay alarmas rutinarias configuradas.</div>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Toast Notifications Container -->
-    <div id="toast-container" class="toast-container"></div>
-
-    <!-- Audio para Alarmas -->
-    <audio id="alarm-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
-
-    <script src="app.js?v=2"></script>
-</body>
+    <title>Vitality - Asistente de Salud</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
